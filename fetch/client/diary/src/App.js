@@ -14,11 +14,24 @@ function App() {
     setDiaryList(res.data);
   };
 
-  const onSubmitHandler = (e) => {
+  const onSubmitHandler = async (e) => {
     e.preventDefault();
     const title = e.target.title.value;
     const content = e.target.content.value;
-    axios.post("http://localhost:4000/api/diary", { title, content });
+
+    const selectedMood = document.querySelector('input[name="mood"]:checked');
+
+    if (!selectedMood) {
+      alert("Please select a mood.");
+      return;
+    }
+
+    axios.post("http://localhost:4000/api/diary", {
+      title,
+      content,
+      mood: selectedMood.value,
+    });
+
     fetchDiary();
   };
 
@@ -29,8 +42,32 @@ function App() {
         <Form onSubmit={onSubmitHandler}>
           <Input name="title" placeholder="제목" />
           <TextArea name="content" placeholder="내용" />
+          오늘의 기분을 선택해주세요.
+          <MoodWrapper>
+            <label>
+              <MoodCheck type="radio" name="mood" value="신남" />
+              신남
+            </label>
+            <label>
+              <MoodCheck type="radio" name="mood" value="좋음" />
+              좋음
+            </label>
+            <label>
+              <MoodCheck type="radio" name="mood" value="보통" />
+              보통
+            </label>
+            <label>
+              <MoodCheck type="radio" name="mood" value="나쁨" />
+              나쁨
+            </label>
+            <label>
+              <MoodCheck type="radio" name="mood" value="화남" />
+              화남
+            </label>
+          </MoodWrapper>
           <SubmitButton type="submit">추가</SubmitButton>
         </Form>
+
         {diaryList && (
           <DiaryList>
             {diaryList.map((diary) => (
@@ -38,6 +75,7 @@ function App() {
                 <div>
                   <DiaryTitle>{diary.title}</DiaryTitle>
                   <DiaryContent>{diary.content}</DiaryContent>
+                  <DiaryMood>오늘의 기분은 {diary.mood}</DiaryMood>
                 </div>
               </DiaryItem>
             ))}
@@ -120,7 +158,23 @@ const DiaryTitle = styled.h3`
   margin-bottom: 10px;
 `;
 
+const DiaryMood = styled.h3`
+  font-size: 15px;
+  margin-bottom: 8px;
+`;
+
 const DiaryContent = styled.p`
   font-size: 16px;
   color: #555;
+`;
+
+const MoodCheck = styled.input`
+  font-size: 20px;
+`;
+
+const MoodWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px;
 `;
