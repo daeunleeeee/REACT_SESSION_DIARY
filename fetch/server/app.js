@@ -38,7 +38,19 @@ app.post("/api/diary", (req, res) => {
   });
   return res.send("success");
 });
+// server/app.js
 
+app.delete("/api/diary/:id", (req, res) => {
+  const targetId = parseInt(req.params.id);
+  const index = diaryList.findIndex((diary) => diary.id === targetId);
+
+  if (index !== -1) {
+    diaryList.splice(index, 1);
+    return res.send("success");
+  } else {
+    return res.status(404).send("Not Found");
+  }
+});
 app.listen(4000, () => {
   console.log("server start!");
 });

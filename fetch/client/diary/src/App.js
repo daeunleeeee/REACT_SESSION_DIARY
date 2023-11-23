@@ -34,7 +34,14 @@ function App() {
 
     fetchDiary();
   };
-
+  const onDeleteHandler = async (id) => {
+    try {
+      await axios.delete(`http://localhost:4000/api/diary/${id}`);
+      fetchDiary();
+    } catch (error) {
+      console.error("Error deleting diary:", error);
+    }
+  };
   return (
     <>
       <Container>
@@ -77,6 +84,9 @@ function App() {
                   <DiaryContent>{diary.content}</DiaryContent>
                   <DiaryMood>오늘의 기분은 {diary.mood}</DiaryMood>
                 </div>
+                <DeleteButton onClick={() => onDeleteHandler(diary.id)}>
+                  삭제
+                </DeleteButton>
               </DiaryItem>
             ))}
           </DiaryList>
@@ -87,7 +97,14 @@ function App() {
 }
 
 export default App;
-
+const DeleteButton = styled.button`
+  padding: 5px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-right: 20px;
+`;
 const Container = styled.div`
   display: flex;
   width: 100vw;
